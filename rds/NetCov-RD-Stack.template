@@ -76,11 +76,11 @@
         "BrokerInstanceType": {
             "Description": "EC2 instance type",
             "Type": "String",
-            "Default": "t3a.xlarge",
+            "Default": "r7a.xlarge",
             "AllowedValues": [
-                "t3a.large",
-                "t3a.xlarge",
-                "t3a.2xlarge"
+                "r7a.large",
+                "r7a.xlarge",
+                "r7a.2xlarge"
             ],
             "ConstraintDescription": "Must be a valid EC2 instance type."
         },
@@ -117,7 +117,7 @@
         "DomainDNSName": {
             "AllowedPattern": "[a-zA-Z0-9]+\\..+",
             "Description": "DNS name of the forest root domain",
-            "MaxLength": "25",
+            "MaxLength": "255",
             "MinLength": "3",
             "Type": "String"
         },
@@ -152,7 +152,7 @@
             "Type": "String"
         },
         "S3Bucket": {
-            "Default": "netcov-set-devtest1-internal-us-west-1",
+            "Default": "netcov-set-devtest1-internal-us-east-1",
             "Description": "The name of the bucket that contains your packaged lambda source code.",
             "Type": "String",
             "AllowedValues":[
@@ -169,11 +169,12 @@
         "SessionHostInstanceType": {
             "Description": "EC2 instance type",
             "Type": "String",
-            "Default": "r6i.large",
+            "Default": "r7i.xlarge",
             "AllowedValues": [
-                "r6i.large",
-                "r6i.2xlarge",
-                "r6i.4xlarge" 
+                "r7i.large",
+                "r7i.xlarge",
+                "r7i.2xlarge",
+                "r7i.4xlarge" 
             ],
             "ConstraintDescription": "Must be a valid EC2 instance type."
         },
