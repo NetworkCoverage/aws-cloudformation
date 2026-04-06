@@ -93,7 +93,7 @@
         "DomainDNSName": {
             "AllowedPattern": "[a-zA-Z0-9]+\\..+",
             "Description": "DNS name of the forest root domain",
-            "MaxLength": "25",
+            "MaxLength": "255",
             "MinLength": "3",
             "Type": "String"
         },
@@ -111,11 +111,11 @@
         "InstanceType": {
             "Description": "EC2 instance type",
             "Type": "String",
-            "Default": "t3a.xlarge",
+            "Default": "r7a.xlarge",
             "AllowedValues": [
-                "t3a.large",
-                "t3a.xlarge",
-                "t3a.2xlarge"
+                "r7a.large",
+                "r7a.xlarge",
+                "r7a.2xlarge"
             ],
             "ConstraintDescription": "Must be a valid EC2 instance type."
         },
