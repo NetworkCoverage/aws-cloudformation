@@ -18,7 +18,7 @@
                 },
                 {
                     "Label": {"default": "VPN Parameters"},
-                    "Parameters": ["CreateTransitGateway", "CustomerGatewayIpAddress", "VpnDestinationCidr"]
+                    "Parameters": ["CreateTransitGateway", "CustomerGatewayIpAddress", "VpnDestinationCidr", "VpnStaticRoutes"]
                 }
             ],
             "ParameterLabels": {
@@ -31,7 +31,8 @@
                 "Subnet1Cidr": {"default": "Subnet 1 Cidr"},
                 "Subnet2Cidr": {"default":"Subnet 2 Cidr"},
                 "VpcCidr": {"default": "VPC 1 Cidr"},
-                "VpnDestinationCidr": {"default":"VPN Destination Cidr"}
+                "VpnDestinationCidr": {"default":"VPN Destination Cidr"},
+                "VpnStaticRoutes": {"default": "Static Only VPN Routing"}
             }
         }
     },
@@ -91,6 +92,12 @@
             "ConstraintDescription": "CIDR block parameter must be in the form x.x.x.x/16-28",
             "Description": "CIDR block of network on the remote side of the VPN",
             "Type": "String"
+        },
+        "VpnStaticRoutes": {
+            "AllowedValues" : ["true", "false"],
+            "Default": "false",
+            "Description": "Enter true/false if this CloudFormation template will deploy static routes",
+            "Type": "String"
         }
     },
     "Conditions": {
@@ -99,6 +106,9 @@
         },
         "CreateVpnGateway": {
             "Fn::Equals": [{"Ref": "CreateTransitGateway"}, "false"]
+        },
+        "StaticVpnRoutes": {
+            "Fn::Equals": [{"Ref": "VpnStaticRoutes"}, "true"]
         }
     },
     "Resources": {     
@@ -236,9 +246,9 @@
                 "CustomerGatewayId": {"Ref": "CustomerGateway"},
                 "StaticRoutesOnly": {
                     "Fn::If":[
-                        "CreateTransitGateway",
-                        {"Ref": "AWS::NoValue"},
-                        true
+                        "StaticVpnRoutes",
+                        true,
+                        {"Ref": "AWS::NoValue"}
                     ]
                 },
                 "Tags": [{"Key": "map-migrated", "Value":"d-server-03jpm34ivsp1f1"}],
@@ -366,7 +376,7 @@
                     "S3Key": {"Ref": "HelperS3Key"}
                 },
                 "Description" : "This function creates the underlying network routes and attachments",
-                "Handler" : "vpc-stack-helper::vpc_stack_helper.Bootstrap::ExecuteFunction",
+                "Handler" : "vpc-stack-helper_v2::vpc_stack_helper_v2.Bootstrap::ExecuteFunction",
                 "MemorySize" : 512,
                 "Role" : {"Fn::GetAtt" : ["HelperLambdaExecutionRole", "Arn"]},
                 "Runtime" : "dotnet8",
@@ -465,7 +475,7 @@
                 },
                 "Description" : "This function generates the name tag for all the resources",
 
-                "Handler" : "vpc-stack-naming::vpc_stack_naming.Bootstrap::ExecuteFunction",
+                "Handler" : "vpc-stack-naming_v2::vpc_stack_naming_v2.Bootstrap::ExecuteFunction",
                 "MemorySize" : 512,
                 "Role" : {"Fn::GetAtt" : ["NamingLambdaExecutionRole", "Arn"]},
                 "Runtime" : "dotnet8",
@@ -488,6 +498,7 @@
                 "SecurityGroup": {"Ref": "SecurityGroup"},
                 "Subnet1": {"Ref": "Subnet1"},
                 "Subnet2": {"Ref": "Subnet2"},
+                "StackUpdate": "true",
                 "TransitGateway": {
                     "Fn::If":[
                         "CreateTransitGateway",

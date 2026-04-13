@@ -294,10 +294,15 @@
                 }
             },
             "Properties": {
-                "BlockDeviceMappings": [
+                "BlockDeviceMappings" : [
                     {
                         "DeviceName": "/dev/sda1",
-                        "Ebs": {"VolumeSize": "100", "VolumeType": "gp3"}
+                        "Ebs": {
+                            "DeleteOnTermination" : true,
+                            "Encrypted" : true,
+                            "VolumeSize" : 250,
+                            "VolumeType" : "gp3"
+                        }
                     }
                 ],
                 "ImageId": {"Ref": "LatestAmiId"},
